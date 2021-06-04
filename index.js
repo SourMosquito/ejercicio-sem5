@@ -6,6 +6,8 @@ const routes = require('./routes');
 
 const db = require('./config/bd');
   require('./models/Estado');
+  require('./models/Municipio');
+  require('./models/Localidad');
 
 db.sync({ alter: true})
 .then(() => {

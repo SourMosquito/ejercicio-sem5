@@ -1,4 +1,5 @@
-const Estado = require('../models/Estado');
+const Estado = require('../models/estado');
+const Municipio = require('../models/municipio');
 
 exports.agregar = async (req, res, next) => {
     try{
@@ -13,7 +14,9 @@ exports.agregar = async (req, res, next) => {
 
 exports.listar = async (req, res, next) => {
     try{
-        const estados = await Estado.findAll({});
+        const estados = await Estado.findAll({
+           include: [{model: Municipio},]
+        });
         res.json(estados);
     } catch (error) {
         console.error(error);
@@ -35,6 +38,7 @@ exports.mostrar = async (req, res, next) => {
             res.status(503).json({ mensaje: 'Error al leer el estado.'});
         }
 };
+
 
 
 exports.actualizar = async (req, res, next) => {
