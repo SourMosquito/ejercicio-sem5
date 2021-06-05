@@ -33,6 +33,15 @@ module.exports = function(){
     router.put('/localidades/:id', localidadesController.actualizar);
     router.delete('/localidades/:id', localidadesController.eliminar);
 
+        
+    //clientes
+    router.post('/clientes', CustomersController.add);
+    router.post('/clientes', CustomersController.list);
+    router.post('/clientes/:id', CustomersController.show);
+    router.post('/clientes/:id', CustomersController.update);
+    router.post('/clientes', CustomersController.delete);
+
+
     return router;
 
 }
