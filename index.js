@@ -2,9 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const db = require('./config/bd');
+const routes = require('./routes');
 
-db.sync()
+const db = require('./config/bd');
+  require('./models/Estado');
+  require('./models/Municipio');
+  require('./models/Localidad');
+
+db.sync({ alter: true})
 .then(() => {
     console.log("Bd Conectada");
 })
@@ -19,4 +24,5 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 app.use(cors());
 
+app.use('/', routes());
 app.listen(5000);

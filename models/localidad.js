@@ -1,15 +1,16 @@
 const Sequelize = require ('sequelize');
 const db = require('../config/bd');
+const Municipio = require('../models/municipio');
 
 
-const Estado = db.define('Estado', {
+const Localidad = db.define('Localidad', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     nombre: {
-        type: Sequelize.STRING(35),
+        type: Sequelize.STRING(40),
         allowNull: false,
     },
     status: {
@@ -18,5 +19,7 @@ const Estado = db.define('Estado', {
     },
 });
 
+Localidad.belongsTo(Municipio, { onDelete: 'CASCADE' });
+Municipio.hasMany(Localidad, { onDelete: 'CASCADE' });
 
-module.exports = Estado;
+module.exports = Localidad;
