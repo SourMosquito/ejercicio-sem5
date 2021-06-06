@@ -1,5 +1,6 @@
 //importar de Customers
 const Customers = require('../models/Customers');
+const Direccion = require('../models/direccion');
 
 //acciones 
 
@@ -28,17 +29,14 @@ exports.add = async (req, res) => {
 
 //listar cliente
 exports.list = async (req, res, next) => {
-    try {
-        //obtener todos los clientes
+    try{
         const customers = await Customers.findAll({
-            include: [{model: direccion},]
+            include: [{model: Direccion},]
         });
         res.json(customers);
-    } catch (error){
-        console.log(error);
-        res.json({
-            message: 'Error al leer la lista de clientes'
-        });
+    } catch (error) {
+        console.error(error);
+        res.json({mensaje: 'Error al leer los clientes'});
         next();
     }
 };
@@ -46,61 +44,60 @@ exports.list = async (req, res, next) => {
 //Get : /customers/:id << Parametro que vamos a esperar
 //Obtener un cliente por ID (SHOW)
 exports.show = async (req, res, next) => {
-    try{
-        //Buscar el cliente por id en bd
-        const customer = await Customers.findById(req.params.id);
-        if (!customer) { //Si no hay cliente
-            res.json({
-                message: 'El cliente no existe!'
-            });
-
-            next(); // Pasar a el siguiente request, continuar con el flujo
-        }
-
-        //Retornar el cliente
-        res.json(customer);
+    try {
+        const customers = await Customers.findByPk(req.params.id);
+        if (!customers) {
+            res.status(404).json({ mensaje: 'No se encontró al cliente.'});
+        } else {
+            res.json(customers);
+        } 
     } catch (error) {
-        console.log(error);
-        res.json({
-            message: 'Error al procesar la solicitud'
-        });
-        next();
-    }
+            res.status(503).json({ mensaje: 'Error al leer los clientes.'});
+        }
 };
 
 //Put, actualizar cliente
 exports.update = async (req, res, next) => {
     try {
-        //Buscar y actualizar
-        const customer = await Customers.findOneAndUpdate(
-        { _id: req.params.id},
-        req.body, // actualizar con datos recibidos
-        {new: true } //retorne el objeto actualizado
-    );
+        const customers = await Customers.findByPk(req.params.id);
+        if (!customers) {
+            res.status(404).json({ mensaje: 'No se encontro al cliente.'});
+        } else {
+            Object.keys(req.body).forEach((propiedad) => {
+                customers[propiedad] = req.body[propiedad];
+            });
 
-    res.json({
-        message: 'Cliente actualizado correctamente'
-    });
+            customers.save();
+            res.json({ mensaje: 'El registro fue actualizado.'})
+        }
     } catch (error) {
-        console.log(error);
-        res.send(error);
-        next();
+        let errores = [];
+        if (error.errors) {
+            errores = error.errors.map((item) => ({
+                campo: item.path,
+                error: item.message,
+            }));
+        }
+
+        res.json({
+            error: true,
+            mensaje: 'Error al actualizar al cliente',
+            errores,
+        });
     }
 };
 
 //eliminar cliente
 exports.delete = async(req, res) => {
-    try{
-        //buscar y eliminar por id
-        await Customers.findOneAndDelete({_id: req.params.id});
-        res.json({
-            message: 'Se ha eliminado un cliente'
-        });
-    } catch (error){
-        console.log(error);
-        res.json({
-            message: 'Error al procesar la solicitud'
-        });
-        next();
+    try {
+        const customers = await Customers.findByPk(req.params.id);
+        if (!customers) {
+            res.status(404).json({ mensaje: 'No se encontro al cliente. '});
+        } else {
+            await customers.destroy();  
+            res.json({ mensaje: 'El cliente fue eliminado.' });
+        }
+    } catch (error) {
+        res.status(503).json({ mensaje: 'Error al eliminar al cliente.'});
     }
 };

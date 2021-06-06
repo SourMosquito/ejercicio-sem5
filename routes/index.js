@@ -5,6 +5,8 @@ const router = express.Router();
 const estadosController = require('../controllers/EstadosController');
 const municipiosController = require('../controllers/MunicipiosController');
 const localidadesController = require('../controllers/LocalidadesController');
+const CustomersController = require('../controllers/CustomersController');
+const DireccionController = require('../controllers/DireccionController');
 
 module.exports = function(){
     //Estados
@@ -36,10 +38,17 @@ module.exports = function(){
         
     //clientes
     router.post('/clientes', CustomersController.add);
-    router.post('/clientes', CustomersController.list);
-    router.post('/clientes/:id', CustomersController.show);
-    router.post('/clientes/:id', CustomersController.update);
-    router.post('/clientes', CustomersController.delete);
+    router.get('/clientes', CustomersController.list);
+    router.get('/clientes/:id', CustomersController.show);
+    router.put('/clientes/:id', CustomersController.update);
+    router.delete('/clientes/:id', CustomersController.delete);
+
+    //direcciones
+    router.post('/direcciones', DireccionController.agregar);
+    router.get('/direcciones', DireccionController.listar);
+    router.get('/direcciones/:id', DireccionController.mostrar);
+    router.put('/direcciones/:id', DireccionController.actualizar);
+    router.delete('/direcciones/:id', DireccionController.eliminar);
 
 
     return router;

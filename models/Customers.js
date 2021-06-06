@@ -1,7 +1,8 @@
 const Sequelize = require ('sequelize');
 const db = require('../config/bd');
+const Direccion = require('./direccion');
 
-const Customers = db.define('Estado', {
+const Customers = db.define('Customers', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -19,22 +20,21 @@ const Customers = db.define('Estado', {
         type: Sequelize.STRING(50),
         allowNull: false,
     },
-    Direccion: {
-        
-    },
-    Email: {
+    email: {
         type: Sequelize.STRING(35),
         allowNull: false,
     },
-    Telefono: {
+    telefono: {
         type: Sequelize.STRING(15),
         allowNull: false,
     },
-    Status: {
+    status: {
         type: Sequelize.BOOLEAN(),
         allowNull: false,
     },
 
 });
+
+Customers.belongsTo(Direccion, { onDelete: 'CASCADE' });
 
 module.exports = Customers;
